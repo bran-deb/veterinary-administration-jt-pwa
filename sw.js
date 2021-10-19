@@ -33,7 +33,18 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
     console.log('Service worker activado')
 
-    console.log(e)
+    //esperamos hasta que se cumpla
+    e.waitUntil(
+        caches.keys()
+            .then(keys => {
+                console.log(keys)
+
+                return Promise.all(             //comparamos las versiones con la ver actuak
+                    keys.filter(key => key !== nombreCache)     //retornamos las versiones pasadas
+                        .map(key => caches.delete(key))         //eliminamos las versiones pasadas
+                )
+            })
+    )
 })
 
 self.addEventListener('fetch', e => {
