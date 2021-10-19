@@ -1,14 +1,16 @@
 //nombre del cache
 const nombreCache = 'apv-v1'
 ///archivos que vamos a cachear
+
 const archivos = [
     "/",
     "index.html",
+    '/error.html',
     "./css/bootstrap.css",
     "./css/styles.css",
     "./js/app.js",
     "./js/apv.js",
-    // "manifest.json"
+    'manifest.json'
 ]
 
 //cuando se instala el service worker
@@ -41,7 +43,19 @@ self.addEventListener('fetch', e => {
     e.respondWith(
         caches.match(e.request)     //revisamos el request
             .then(respuestaCache => {   //si es igual al cache retornamos cache
-                return respuestaCache
+                return (respuestaCache ? respuestaCache : caches.match(errorPagina))
             })
+            .catch(() => caches.match("/error.html")) //mandamos a error.html
     )
 })
+// self.addEventListener('fetch', e => {
+//     console.log('Fetch..', e);
+
+//     e.respondWith(
+//         caches.match(e.request)
+//             .then(respuestaCache => {
+//                 return (respuestaCache ? respuestaCache : caches.match(errorPagina))
+//             })
+//         // .cache(() => caches.match('./error.html'))
+//     )
+// })
